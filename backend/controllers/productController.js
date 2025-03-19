@@ -10,11 +10,18 @@ exports.getProducts = async (req, res, next) => {
   });
 };
 
-//Get Single Product API - /api/v1/product/:id
+//Get Single Product API - /api/v1/products/:id
 exports.getSingleProduct = async (req, res, next) => {
-  const product = await productModel.findById(req.params.id);
-  res.json({
-    success: true,
-    message: "This route will show all single products in database",
-  });
+  try {
+    const product = await productModel.findById(req.params.id);
+    res.json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "Product not found: " + error.message,
+    });
+  }
 };
