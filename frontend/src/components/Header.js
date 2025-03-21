@@ -3,7 +3,17 @@ export default function Header() {
     <nav className="navbar row">
       <div className="col-12 col-md-3">
         <div className="navbar-brand">
-          <img width="150px" src="/frontend/public/images/products/logo.png" />
+          <a href="/" style={{ textDecoration: "none" }}>
+            <h1
+              style={{
+                fontFamily: "Arial, sans-serif",
+                color: "#FEBD69",
+                fontWeight: "bold",
+              }}
+            >
+              AFR<span style={{ color: "#6c757d" }}>Zone</span>
+            </h1>
+          </a>
         </div>
       </div>
 
