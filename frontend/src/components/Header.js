@@ -11,7 +11,7 @@ export default function Header() {
                 fontWeight: "bold",
               }}
             >
-              AFR<span style={{ color: "#6c757d" }}>Zone</span>
+              A<span style={{ color: "#6c757d" }}>zone</span>
             </h1>
           </a>
         </div>
