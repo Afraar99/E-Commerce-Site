@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
           </h5>
           <div className="ratings mt-auto">
             <div className="rating-outer">
-              <div className="rating-inner"></div>
+              <div className="rating-inner" style={{width: `${product.ratings/5*100}%`}}></div>
             </div>
           </div>
           <p className="card-text">${product.price}</p>
