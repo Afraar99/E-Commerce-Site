@@ -2,12 +2,19 @@ import "./App.css";
 import Home from "./pages/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <Header />
-      <Home />
+      <Router>
+        <div>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </div>
+      </Router>
       <Footer />
     </div>
   );
