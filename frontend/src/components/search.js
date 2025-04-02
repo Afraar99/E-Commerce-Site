@@ -5,7 +5,9 @@ export default function Search() {
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
 
-  const searchHandler = (e) => {};
+  const searchHandler = (e) => {
+    navigate("/search?keyword=" + keyword);
+  };
   return (
     <div className="input-group">
       <input
@@ -16,7 +18,7 @@ export default function Search() {
         placeholder="Enter Product Name ..."
       />
       <div className="input-group-append">
-        <button id="search_btn" className="btn">
+        <button onClick={searchHandler} id="search_btn" className="btn">
           <i className="fa fa-search" aria-hidden="true"></i>
         </button>
       </div>
