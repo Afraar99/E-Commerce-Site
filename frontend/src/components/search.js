@@ -5,7 +5,7 @@ export default function Search() {
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
 
-  const searchHandler = (e) => {
+  const searchHandler = () => {
     navigate("/search?keyword=" + keyword);
   };
   return (
@@ -15,6 +15,7 @@ export default function Search() {
         id="search_field"
         onChange={(e) => setKeyword(e.target.value)}
         className="form-control"
+        onBlur={searchHandler}
         placeholder="Enter Product Name ..."
       />
       <div className="input-group-append">
