@@ -14,7 +14,7 @@ export default function Header({ cartItems }) {
                 fontWeight: "bold",
               }}
             >
-              A<span style={{ color: "#6c757d" }}>zone</span>
+              A<span style={{ color: "#6c757d" }}>Mone</span>
             </h1>
           </a>
         </div>
