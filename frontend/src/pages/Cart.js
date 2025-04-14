@@ -2,6 +2,31 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 
 export default function Cart({ cartItems, setCartItems }) {
+  function increaseQty(item) {
+    if (item.product.stock == item.qty) {
+      return;
+    }
+    const updatedItems = cartItems.map((i) => {
+      if (i.product._id == item.product._id) {
+        i.qty++;
+      }
+      return i;
+    });
+    setCartItems(updatedItems);
+  }
+
+  function decreaseQty(item) {
+    if (item.qty > 1) {
+      const updatedItems = cartItems.map((i) => {
+        if (i.product._id == item.product._id) {
+          i.qty--;
+        }
+        return i;
+      });
+      setCartItems(updatedItems);
+    }
+  }
+
   return (
     <div className="container container-fluid">
       <h2 className="mt-5">
@@ -36,7 +61,12 @@ export default function Cart({ cartItems, setCartItems }) {
 
                   <div className="col-4 col-lg-3 mt-4 mt-lg-0">
                     <div className="stockCounter d-inline">
-                      <span className="btn btn-danger minus">-</span>
+                      <span
+                        className="btn btn-danger minus"
+                        onClick={() => decreaseQty(item)}
+                      >
+                        -
+                      </span>
                       <input
                         type="number"
                         className="form-control count d-inline"
@@ -44,7 +74,12 @@ export default function Cart({ cartItems, setCartItems }) {
                         readonly
                       />
 
-                      <span className="btn btn-primary plus">+</span>
+                      <span
+                        className="btn btn-primary plus"
+                        onClick={() => increaseQty(item)}
+                      >
+                        +
+                      </span>
                     </div>
                   </div>
 
