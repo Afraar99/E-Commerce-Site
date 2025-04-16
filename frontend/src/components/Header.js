@@ -6,17 +6,14 @@ export default function Header({ cartItems }) {
     <nav className="navbar row">
       <div className="col-12 col-md-3">
         <div className="navbar-brand">
-          <a href="/" style={{ textDecoration: "none" }}>
-            <h1
-              style={{
-                fontFamily: "Arial, sans-serif",
-                color: "#FEBD69",
-                fontWeight: "bold",
-              }}
-            >
-              A<span style={{ color: "#6c757d" }}>Mone</span>
-            </h1>
-          </a>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <div className="logo-container">
+              <h1 className="logo-text">
+                <span className="logo-part-1">Fusion</span>
+                <span className="logo-part-2">Buy</span>
+              </h1>
+            </div>
+          </Link>
         </div>
       </div>
 
