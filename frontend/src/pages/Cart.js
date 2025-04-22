@@ -1,7 +1,10 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Cart({ cartItems, setCartItems }) {
+  const [complete, setComplete] = useState(false);
+
   function increaseQty(item) {
     if (item.product.stock == item.qty) {
       return;
@@ -34,6 +37,18 @@ export default function Cart({ cartItems, setCartItems }) {
       }
     });
     setCartItems(updatedItems);
+  }
+
+  function PlaceOrderHandler() {
+    fetch(process.env.REACT_APP_API_URL + "/order", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(cartItems),
+    }).then(() => {
+      setCartItems([]);
+      setComplete(true);
+      toast.success("Order placed successfully!");
+    });
   }
 
   return cartItems.length > 0 ? (
@@ -128,7 +143,11 @@ export default function Cart({ cartItems, setCartItems }) {
               </p>
 
               <hr />
-              <button id="checkout_btn" className="btn btn-primary btn-block">
+              <button
+                id="checkout_btn"
+                onClick={PlaceOrderHandler}
+                className="btn btn-primary btn-block"
+              >
                 Place Order
               </button>
             </div>
@@ -136,7 +155,12 @@ export default function Cart({ cartItems, setCartItems }) {
         </div>
       </div>
     </Fragment>
-  ) : (
+  ) : !complete ? (
     <h2 className="mt-5">Your Cart is Empty!</h2>
+  ) : (
+    <Fragment>
+      <h2 className="mt-5">Order Complete!</h2>
+      <p>Your order hase been placed succesfully</p>
+    </Fragment>
   );
 }
