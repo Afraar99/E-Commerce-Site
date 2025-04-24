@@ -58,6 +58,69 @@ body,
   min-height: 100vh;
 }
 
+/* Fixed Header Styles */
+.fixed-header-space {
+  padding-top: 90px; /* Reduced from 110px */
+}
+
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0; /* Removed default padding */
+}
+
+/* Announcement Bar */
+.announcement-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #f0c14b;
+  color: #131921;
+  padding: 5px 0; /* Reduced from 8px */
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Fixed Navbar */
+nav.navbar {
+  position: fixed;
+  top: 30px; /* Reduced from 38px to match the new announcement bar height */
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: #131921;
+  padding: 8px 0; /* Reduced from 12px */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.container.container-fluid {
+  flex: 1 0 auto;
+  padding-bottom: 30px;
+  padding-top: 90px; /* Reduced from 110px */
+}
+
+/* Responsive Adjustments for Fixed Header */
+@media (max-width: 767px) {
+  .container.container-fluid {
+    padding-top: 100px; /* Reduced from 120px */
+  }
+  
+  nav.navbar {
+    top: 26px; /* Reduced from 32px */
+  }
+}
+
+@media (max-width: 576px) {
+  .container.container-fluid {
+    padding-top: 110px; /* Reduced from 130px */
+  }
+}
+
 /* Scroll Bar */
 
 ::-webkit-scrollbar-track {
@@ -716,7 +779,7 @@ ul.CTAs a {
 .announcement-bar {
   background-color: #f0c14b;
   color: #131921;
-  padding: 8px 0;
+  padding: 5px 0; /* Reduced from 8px */
   font-size: 14px;
   font-weight: 500;
 }
@@ -808,7 +871,7 @@ ul.CTAs a {
 /* Updated Header Styles for better alignment and spacing */
 .navbar {
   background-color: #131921;
-  padding: 15px 0;
+  padding: 8px 0; /* Reduced from 12px */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -990,7 +1053,7 @@ ul.CTAs a {
 /* Updated Header Styles for better spacing balance */
 .navbar {
   background-color: #131921;
-  padding: 12px 0;
+  padding: 8px 0; /* Reduced from 12px */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
