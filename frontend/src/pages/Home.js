@@ -7,8 +7,9 @@ import {
   FaShoppingBag,
   FaRegStar,
 } from "react-icons/fa";
+import { toast } from "react-toastify";
 
-export default function Home() {
+export default function Home({ setCartItems }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
@@ -63,6 +64,49 @@ export default function Home() {
       </div>
     );
   }
+
+  // Add this helper function for the featured product image
+  const getImageUrl = (product) => {
+    // Check if product.images exists and has at least one item
+    if (product.images && product.images.length > 0) {
+      // Handle different image object structures
+      if (product.images[0].url) {
+        return product.images[0].url;
+      } else if (product.images[0].image) {
+        return product.images[0].image;
+      }
+    }
+    // Fallback image
+    return "/images/default-product.png";
+  };
+
+  // Add this function to handle adding products to cart
+  const addToCart = (item) => {
+    // Get current cart items
+    const existingCartItems =
+      JSON.parse(localStorage.getItem("cartItems")) || [];
+    const existingItem = existingCartItems.find(
+      (i) => i.product._id === item.product._id
+    );
+
+    let updatedCart;
+
+    if (existingItem) {
+      // Update quantity if item exists
+      updatedCart = existingCartItems.map((i) =>
+        i.product._id === item.product._id ? { ...i, qty: i.qty + item.qty } : i
+      );
+      toast.info("Item quantity updated in cart");
+    } else {
+      // Add new item
+      updatedCart = [...existingCartItems, item];
+      toast.success(`${item.product.name} added to cart`);
+    }
+
+    // Update both localStorage and state
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    setCartItems(updatedCart);
+  };
 
   return (
     <Fragment>
@@ -122,10 +166,7 @@ export default function Home() {
             </div>
             <div className="featured-image">
               <img
-                src={
-                  featuredProduct.images?.[0]?.url ||
-                  "/images/default-product.png"
-                }
+                src={getImageUrl(featuredProduct)}
                 alt={featuredProduct.name}
               />
             </div>
@@ -152,7 +193,11 @@ export default function Home() {
         {products.length > 0 ? (
           <div className="products-grid">
             {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
+              <ProductCard
+                key={product._id}
+                product={product}
+                addToCart={addToCart}
+              />
             ))}
           </div>
         ) : (

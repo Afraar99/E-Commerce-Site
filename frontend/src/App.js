@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -18,6 +18,19 @@ import "./App.css";
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
+  // Load cart items from localStorage on app startup
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
+
+  // Update localStorage whenever cart items change
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   return (
     <UserProvider>
       <Router>
@@ -26,7 +39,7 @@ function App() {
           <div className="container container-fluid">
             <ToastContainer position="bottom-center" />
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Home setCartItems={setCartItems} />} />
               <Route
                 path="/product/:id"
                 element={
