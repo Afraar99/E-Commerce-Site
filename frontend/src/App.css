@@ -1720,8 +1720,8 @@ ul.CTAs a {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f0f0f0, #e5e5e5);
-  height: 400px;
+  background: linear-gradient(335deg, #FFFFFF, #e5e5e5);
+  height: 426px;
 }
 
 .featured-image img {
@@ -1800,7 +1800,7 @@ ul.CTAs a {
 .product-image {
   position: relative;
   height: 200px;
-  background-color: #f7f7f7;
+  background-color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1859,6 +1859,7 @@ ul.CTAs a {
 
 .product-info {
   padding: 20px;
+  background-color: #f7f7f7;
 }
 
 .product-name {
