@@ -1,13 +1,30 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   FaStar,
   FaRegStar,
   FaStarHalfAlt,
-  FaEye,
   FaShoppingCart,
 } from "react-icons/fa";
+import { toast } from "react-toastify";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, addToCart }) {
+  const navigate = useNavigate();
+
+  // Helper function to get the correct image URL
+  const getImageUrl = () => {
+    // Check if product.images exists and has at least one item
+    if (product.images && product.images.length > 0) {
+      // Handle different image object structures
+      if (product.images[0].url) {
+        return product.images[0].url;
+      } else if (product.images[0].image) {
+        return product.images[0].image;
+      }
+    }
+    // Fallback image
+    return "/images/default-product.png";
+  };
+
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -22,27 +39,47 @@ export default function ProductCard({ product }) {
     return stars;
   };
 
+  // Navigate to product details page when card is clicked
+  const handleCardClick = () => {
+    navigate(`/product/${product._id}`);
+  };
+
+  // Handle add to cart button click
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // Prevent card click event
+
+    // Check if the product is in stock
+    if (product.stock <= 0) {
+      toast.error("This product is out of stock");
+      return;
+    }
+
+    // Add the product to cart with quantity 1
+    if (addToCart) {
+      addToCart({
+        product: product,
+        qty: 1,
+      });
+    }
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleCardClick}>
       <div className="product-badge">New</div>
       <div className="product-image">
-        <img
-          src={product.images?.[0]?.url || "/images/default-product.png"}
-          alt={product.name}
-        />
+        <img src={getImageUrl()} alt={product.name} />
         <div className="product-actions">
-          <Link to={`/product/${product._id}`} className="view-btn">
-            <FaEye />
-          </Link>
-          <Link to={`/product/${product._id}`} className="cart-btn">
+          <button
+            onClick={handleAddToCart}
+            className="cart-btn"
+            aria-label="Add to cart"
+          >
             <FaShoppingCart />
-          </Link>
+          </button>
         </div>
       </div>
       <div className="product-info">
-        <Link to={`/product/${product._id}`} className="product-name">
-          {product.name}
-        </Link>
+        <span className="product-name">{product.name}</span>
         <div className="product-rating">
           <div className="stars">{renderStars(product.ratings)}</div>
           <span className="reviews-count">
