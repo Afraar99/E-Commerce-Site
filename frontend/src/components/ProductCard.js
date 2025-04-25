@@ -1,31 +1,55 @@
 import { Link } from "react-router-dom";
+import {
+  FaStar,
+  FaRegStar,
+  FaStarHalfAlt,
+  FaEye,
+  FaShoppingCart,
+} from "react-icons/fa";
 
 export default function ProductCard({ product }) {
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<FaStar key={i} className="star-filled" />);
+      } else if (i - 0.5 <= rating) {
+        stars.push(<FaStarHalfAlt key={i} className="star-half" />);
+      } else {
+        stars.push(<FaRegStar key={i} className="star-empty" />);
+      }
+    }
+    return stars;
+  };
+
   return (
-    <div className="col-sm-12 col-md-6 col-lg-3 my-3">
-      <div className="card p-3 rounded">
-        <img className="card-img-top mx-auto" src={product.images[0].image} />
-        <div className="card-body d-flex flex-column">
-          <h5 className="card-title">
-            <Link to={"/product/" + product._id}>{product.name}</Link>
-          </h5>
-          <div className="ratings mt-auto">
-            <div className="rating-outer">
-              <div
-                className="rating-inner"
-                style={{ width: `${(product.ratings / 5) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-          <p className="card-text">${product.price}</p>
-          <Link
-            to={"/product/" + product._id}
-            id="view_btn"
-            className="btn btn-block"
-          >
-            View Details
+    <div className="product-card">
+      <div className="product-badge">New</div>
+      <div className="product-image">
+        <img
+          src={product.images?.[0]?.url || "/images/default-product.png"}
+          alt={product.name}
+        />
+        <div className="product-actions">
+          <Link to={`/product/${product._id}`} className="view-btn">
+            <FaEye />
+          </Link>
+          <Link to={`/product/${product._id}`} className="cart-btn">
+            <FaShoppingCart />
           </Link>
         </div>
+      </div>
+      <div className="product-info">
+        <Link to={`/product/${product._id}`} className="product-name">
+          {product.name}
+        </Link>
+        <div className="product-rating">
+          <div className="stars">{renderStars(product.ratings)}</div>
+          <span className="reviews-count">
+            ({product.numOfReviews} reviews)
+          </span>
+        </div>
+        <div className="product-price">${product.price}</div>
       </div>
     </div>
   );
