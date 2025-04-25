@@ -51,7 +51,7 @@ export default function Header({ cartItemCount = 0 }) {
           </p>
         </div>
       </div>
-      <nav className="navbar">
+      <nav className="navbar glass-navbar">
         <div className="container-fluid px-4 px-lg-5">
           <div className="row align-items-center w-100 no-gutters">
             {/* Logo Section */}
