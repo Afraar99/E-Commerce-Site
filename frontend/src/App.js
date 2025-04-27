@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import OrderHistory from "./pages/OrderHistory";
 import OrderDetails from "./pages/OrderDetails";
+import LogoutSuccess from "./pages/LogoutSuccess"; // Import the new component
 import "./App.css";
 
 function App() {
@@ -60,6 +61,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/orders" element={<OrderHistory />} />
               <Route path="/order/:id" element={<OrderDetails />} />
+              <Route path="/logout-success" element={<LogoutSuccess />} />{" "}
+              {/* Add new route */}
             </Routes>
           </div>
           <Footer />
