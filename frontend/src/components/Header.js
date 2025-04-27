@@ -36,7 +36,8 @@ export default function Header({ cartItemCount = 0 }) {
     const result = await logout();
     if (result.success) {
       toast.success("Logged out successfully");
-      navigate("/");
+      // Redirect to logout success page instead of home
+      navigate("/logout-success");
     } else {
       toast.error(result.message || "Error logging out");
     }
