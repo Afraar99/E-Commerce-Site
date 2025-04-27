@@ -12,24 +12,31 @@ import {
   FaShieldAlt,
   FaUserFriends,
   FaSignInAlt,
+  FaArrowRight,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 
 export default function Register() {
-  const [user, setUser] = useState({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { register } = useContext(UserContext);
 
-  const { name, email, password, confirmPassword } = user;
+  const { name, email, password, confirmPassword } = formData;
 
-  function handleChange(e) {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -41,7 +48,11 @@ export default function Register() {
 
     setLoading(true);
 
-    const result = await register({ name, email, password });
+    const result = await register({
+      name,
+      email,
+      password,
+    });
 
     setLoading(false);
 
@@ -53,35 +64,43 @@ export default function Register() {
     }
   }
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
-    <div className="login-page-wrapper">
-      <div className="login-container">
-        {/* Left side - Registration Form */}
-        <div className="login-form-side">
-          <div className="login-form-wrapper">
-            <div className="login-logo">
-              <FaShoppingBag className="login-logo-icon" />
+    <div className="auth-container">
+      <div className="auth-wrapper">
+        <div className="auth-side auth-form-side">
+          <div className="auth-form-wrapper">
+            <div className="auth-logo">
+              <FaShoppingBag className="auth-logo-icon" />
               <span>FusionBuy</span>
             </div>
 
-            <h1 className="login-title">Create Account</h1>
-            <p className="login-subtitle">
+            <h1 className="auth-title">Create Account</h1>
+            <p className="auth-subtitle">
               Join FusionBuy to start your shopping journey
             </p>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">
-                      <FaUser />
-                    </span>
+                <label htmlFor="name_field" className="form-label">
+                  Full Name
+                </label>
+                <div className="input-with-icon">
+                  <div className="input-icon-wrapper">
+                    <FaUser className="input-icon" />
                   </div>
                   <input
                     type="text"
                     id="name_field"
                     className="form-control"
-                    placeholder="Full Name"
+                    placeholder="Mohamed Afraar"
                     name="name"
                     value={name}
                     onChange={handleChange}
@@ -91,17 +110,18 @@ export default function Register() {
               </div>
 
               <div className="form-group">
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">
-                      <FaEnvelope />
-                    </span>
+                <label htmlFor="email_field" className="form-label">
+                  Email Address
+                </label>
+                <div className="input-with-icon">
+                  <div className="input-icon-wrapper">
+                    <FaEnvelope className="input-icon" />
                   </div>
                   <input
                     type="email"
                     id="email_field"
                     className="form-control"
-                    placeholder="Email Address"
+                    placeholder="your@email.com"
                     name="email"
                     value={email}
                     onChange={handleChange}
@@ -111,56 +131,101 @@ export default function Register() {
               </div>
 
               <div className="form-group">
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">
-                      <FaLock />
-                    </span>
+                <label htmlFor="password_field" className="form-label">
+                  Password
+                </label>
+                <div className="input-with-icon">
+                  <div className="input-icon-wrapper">
+                    <FaLock className="input-icon" />
                   </div>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password_field"
                     className="form-control"
-                    placeholder="Password"
+                    placeholder="••••••••"
                     name="password"
                     value={password}
                     onChange={handleChange}
                     required
                     minLength="6"
                   />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={togglePasswordVisibility}
+                    tabIndex="-1"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="password-toggle-icon" />
+                    ) : (
+                      <FaEye className="password-toggle-icon" />
+                    )}
+                  </button>
                 </div>
+                <small className="password-hint">
+                  Must be at least 6 characters long
+                </small>
               </div>
 
               <div className="form-group">
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">
-                      <FaLock />
-                    </span>
+                <label htmlFor="confirm_password_field" className="form-label">
+                  Confirm Password
+                </label>
+                <div className="input-with-icon">
+                  <div className="input-icon-wrapper">
+                    <FaLock className="input-icon" />
                   </div>
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     id="confirm_password_field"
                     className="form-control"
-                    placeholder="Confirm Password"
+                    placeholder="••••••••"
                     name="confirmPassword"
                     value={confirmPassword}
                     onChange={handleChange}
                     required
                   />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={toggleConfirmPasswordVisibility}
+                    tabIndex="-1"
+                    aria-label={
+                      showConfirmPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showConfirmPassword ? (
+                      <FaEyeSlash className="password-toggle-icon" />
+                    ) : (
+                      <FaEye className="password-toggle-icon" />
+                    )}
+                  </button>
                 </div>
               </div>
 
               <button
                 id="register_button"
                 type="submit"
-                className="btn login-btn"
+                className="btn auth-btn"
                 disabled={loading}
               >
-                {loading ? "Creating Account..." : "SIGN UP"}
+                {loading ? (
+                  <div className="auth-btn-content">
+                    <span className="auth-btn-loader"></span>
+                    <span>Creating Account...</span>
+                  </div>
+                ) : (
+                  <div className="auth-btn-content">
+                    <span>SIGN UP</span>
+                    <FaArrowRight className="auth-btn-icon" />
+                  </div>
+                )}
               </button>
 
-              <div className="login-separator">
+              <div className="auth-separator">
                 <span>OR</span>
               </div>
 
@@ -185,16 +250,15 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Right side - Promotional Image */}
         <div
-          className="login-image-side"
+          className="auth-side auth-image-side"
           style={{
-            backgroundImage: `url(${process.env.PUBLIC_URL}/images/register-bg.png)`,
+            backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url(${process.env.PUBLIC_URL}/images/register-bg.png)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
-          <div className="login-benefits">
+          <div className="auth-benefits register-benefits">
             <div className="benefit-item">
               <div className="benefit-icon">
                 <FaShieldAlt />
