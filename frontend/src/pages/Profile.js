@@ -4,23 +4,28 @@ import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
 import {
   FaUser,
-  FaEdit,
+  FaEnvelope,
   FaMapMarkerAlt,
   FaCity,
   FaGlobe,
-  FaMailBulk,
+  FaPhone,
   FaSave,
+  FaArrowRight,
+  FaShoppingBag,
 } from "react-icons/fa";
 
 export default function Profile() {
   const { user, updateProfile, isAuthenticated } = useContext(UserContext);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [country, setCountry] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -31,34 +36,43 @@ export default function Profile() {
     }
 
     if (user) {
-      setName(user.name || "");
-      setEmail(user.email || "");
-      if (user.address) {
-        setStreet(user.address.street || "");
-        setCity(user.address.city || "");
-        setState(user.address.state || "");
-        setPostalCode(user.address.postalCode || "");
-        setCountry(user.address.country || "");
-      }
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        street: user.address?.street || "",
+        city: user.address?.city || "",
+        state: user.address?.state || "",
+        postalCode: user.address?.postalCode || "",
+        country: user.address?.country || "",
+      });
     }
   }, [user, isAuthenticated, navigate]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
     const userData = {
-      name,
-      email,
-      street,
-      city,
-      state,
-      postalCode,
-      country,
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      street: formData.street,
+      city: formData.city,
+      state: formData.state,
+      postalCode: formData.postalCode,
+      country: formData.country,
     };
 
     const result = await updateProfile(userData);
-
     setLoading(false);
 
     if (result.success) {
@@ -69,164 +83,218 @@ export default function Profile() {
   }
 
   return (
-    <div className="container container-fluid my-5">
-      <div className="row wrapper">
-        <div className="col-12 col-lg-8 mx-auto">
-          <form
-            className="shadow-lg p-4 rounded"
-            onSubmit={handleSubmit}
-            style={{ backgroundColor: "#fff" }}
-          >
-            <h1 className="mb-4 text-center">My Profile</h1>
-            <div className="text-center mb-4">
-              {/* Using FaUser icon instead of avatar image */}
-              <div
-                className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
-                style={{
-                  width: "120px",
-                  height: "120px",
-                  backgroundColor: "#e9ecef",
-                  border: "5px solid #f0f0f0",
-                }}
-              >
-                <FaUser size={60} color="#6c757d" />
-              </div>
+    <div className="profile-container">
+      <div className="profile-header">
+        <div className="profile-header-content">
+          <div className="profile-avatar">
+            <div className="profile-avatar-circle">
+              <FaUser />
             </div>
+          </div>
+          <div className="profile-title">
+            <h1>My Profile</h1>
+            <p>Update your personal information and shipping address</p>
+          </div>
+        </div>
+      </div>
 
-            <div className="form-group">
-              <label htmlFor="name_field" style={{ fontWeight: "600" }}>
-                <FaUser className="mr-2" /> Name
-              </label>
-              <input
-                type="text"
-                id="name_field"
-                className="form-control"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
+      <div className="profile-card">
+        <form onSubmit={handleSubmit} className="profile-form">
+          <div className="profile-section">
+            <h2 className="profile-section-title">
+              <FaUser className="profile-section-icon" /> Personal Information
+            </h2>
 
-            <div className="form-group">
-              <label htmlFor="email_field" style={{ fontWeight: "600" }}>
-                <FaMailBulk className="mr-2" /> Email
-              </label>
-              <input
-                type="email"
-                id="email_field"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <h4
-              className="mt-5 mb-3"
-              style={{ borderBottom: "1px solid #eee", paddingBottom: "10px" }}
-            >
-              <FaMapMarkerAlt className="mr-2" /> Shipping Address
-            </h4>
-
-            <div className="form-group">
-              <label htmlFor="street_field">Street Address</label>
-              <input
-                type="text"
-                id="street_field"
-                className="form-control"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
-              />
-            </div>
-
-            <div className="row">
-              <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="city_field">
-                    <FaCity className="mr-1" /> City
-                  </label>
+            <div className="profile-form-row">
+              <div className="profile-form-group">
+                <label htmlFor="name">Full Name</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaUser className="profile-input-icon" />
+                  </div>
                   <input
                     type="text"
-                    id="city_field"
-                    className="form-control"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="state_field">State/Province</label>
-                  <input
-                    type="text"
-                    id="state_field"
-                    className="form-control"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="profile-input"
+                    required
                   />
                 </div>
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="postal_code_field">Postal Code</label>
+            <div className="profile-form-row">
+              <div className="profile-form-group">
+                <label htmlFor="email">Email Address</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaEnvelope className="profile-input-icon" />
+                  </div>
                   <input
-                    type="text"
-                    id="postal_code_field"
-                    className="form-control"
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="col-md-6">
-                <div className="form-group">
-                  <label htmlFor="country_field">
-                    <FaGlobe className="mr-1" /> Country
-                  </label>
-                  <input
-                    type="text"
-                    id="country_field"
-                    className="form-control"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="profile-input"
+                    required
                   />
                 </div>
               </div>
             </div>
 
+            <div className="profile-form-row">
+              <div className="profile-form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaPhone className="profile-input-icon" />
+                  </div>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="profile-input"
+                    placeholder="(Optional)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="profile-section">
+            <h2 className="profile-section-title">
+              <FaMapMarkerAlt className="profile-section-icon" /> Shipping
+              Address
+            </h2>
+
+            <div className="profile-form-row">
+              <div className="profile-form-group">
+                <label htmlFor="street">Street Address</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaMapMarkerAlt className="profile-input-icon" />
+                  </div>
+                  <input
+                    type="text"
+                    id="street"
+                    name="street"
+                    value={formData.street}
+                    onChange={handleChange}
+                    className="profile-input"
+                    placeholder="123 Main St"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-form-row profile-form-row-2-col">
+              <div className="profile-form-group">
+                <label htmlFor="city">City</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaCity className="profile-input-icon" />
+                  </div>
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className="profile-input"
+                  />
+                </div>
+              </div>
+
+              <div className="profile-form-group">
+                <label htmlFor="state">State/Province</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaMapMarkerAlt className="profile-input-icon" />
+                  </div>
+                  <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    className="profile-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-form-row profile-form-row-2-col">
+              <div className="profile-form-group">
+                <label htmlFor="postalCode">Postal Code</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaMapMarkerAlt className="profile-input-icon" />
+                  </div>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    name="postalCode"
+                    value={formData.postalCode}
+                    onChange={handleChange}
+                    className="profile-input"
+                  />
+                </div>
+              </div>
+
+              <div className="profile-form-group">
+                <label htmlFor="country">Country</label>
+                <div className="profile-input-with-icon">
+                  <div className="profile-input-icon-wrapper">
+                    <FaGlobe className="profile-input-icon" />
+                  </div>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    className="profile-input"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="profile-actions">
             <button
               type="submit"
-              className="btn btn-primary btn-block py-2 mt-4 d-flex align-items-center justify-content-center"
+              className="profile-save-btn"
               disabled={loading}
-              style={{
-                backgroundColor: "#f0c14b",
-                borderColor: "#a88734 #9c7e31 #846a29",
-                color: "#111",
-                fontWeight: "bold",
-              }}
             >
               {loading ? (
-                <>
-                  <span
-                    className="spinner-border spinner-border-sm mr-2"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                  Updating...
-                </>
+                <div className="profile-btn-content">
+                  <span className="profile-btn-loader"></span>
+                  <span>Updating...</span>
+                </div>
               ) : (
-                <>
-                  <FaSave className="mr-2" /> Update Profile
-                </>
+                <div className="profile-btn-content">
+                  <FaSave className="profile-btn-icon-left" />
+                  <span>Save Changes</span>
+                  <FaArrowRight className="profile-btn-icon-right" />
+                </div>
               )}
             </button>
-          </form>
-        </div>
+
+            <button
+              type="button"
+              className="profile-orders-btn"
+              onClick={() => navigate("/orders")}
+            >
+              <FaShoppingBag className="profile-btn-icon-left" />
+              <span>View My Orders</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
