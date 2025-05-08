@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import "../styles/components/Search.css";
 
 export default function Search() {
   const [keyword, setKeyword] = useState("");
@@ -26,20 +27,18 @@ export default function Search() {
 
   return (
     <form onSubmit={searchHandler} className="search-form">
-      <div className="input-group search-input-group">
+      <div className="search-input-group">
         <input
           type="text"
           id="search_field"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          className="form-control"
           placeholder="Search products..."
+          aria-label="Search products"
         />
-        <div className="input-group-append">
-          <button type="submit" id="search_btn" className="btn">
-            <FaSearch />
-          </button>
-        </div>
+        <button type="submit" id="search_btn" aria-label="Search">
+          <FaSearch />
+        </button>
       </div>
     </form>
   );

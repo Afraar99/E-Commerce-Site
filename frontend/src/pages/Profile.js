@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
 import {
@@ -12,7 +12,10 @@ import {
   FaSave,
   FaArrowRight,
   FaShoppingBag,
+  FaCameraRetro,
+  FaCheckCircle,
 } from "react-icons/fa";
+import "../styles/pages/Profile.css";
 
 export default function Profile() {
   const { user, updateProfile, isAuthenticated } = useContext(UserContext);
@@ -27,6 +30,10 @@ export default function Profile() {
     country: "",
   });
   const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +53,11 @@ export default function Profile() {
         postalCode: user.address?.postalCode || "",
         country: user.address?.country || "",
       });
+
+      // If user has a profile image, set the preview
+      if (user.avatar) {
+        setImagePreview(user.avatar);
+      }
     }
   }, [user, isAuthenticated, navigate]);
 
@@ -57,22 +69,58 @@ export default function Profile() {
     });
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size should be less than 2MB");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload a valid image file");
+      return;
+    }
+
+    setProfileImage(file);
+
+    // Create a preview URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Show success message
+    setUploadSuccess(true);
+    setTimeout(() => setUploadSuccess(false), 3000);
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
-    const userData = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      street: formData.street,
-      city: formData.city,
-      state: formData.state,
-      postalCode: formData.postalCode,
-      country: formData.country,
-    };
+    // Create FormData to send both profile data and image
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("phone", formData.phone);
+    formDataToSend.append("street", formData.street);
+    formDataToSend.append("city", formData.city);
+    formDataToSend.append("state", formData.state);
+    formDataToSend.append("postalCode", formData.postalCode);
+    formDataToSend.append("country", formData.country);
 
-    const result = await updateProfile(userData);
+    if (profileImage) {
+      formDataToSend.append("avatar", profileImage);
+    }
+
+    const result = await updateProfile(formDataToSend);
     setLoading(false);
 
     if (result.success) {
@@ -87,8 +135,21 @@ export default function Profile() {
       <div className="profile-header">
         <div className="profile-header-content">
           <div className="profile-avatar">
-            <div className="profile-avatar-circle">
-              <FaUser />
+            <div className="profile-avatar-circle" onClick={triggerFileInput}>
+              {imagePreview ? (
+                <img src={imagePreview} alt="Profile" />
+              ) : (
+                <FaUser />
+              )}
+            </div>
+            <div className="profile-avatar-upload" onClick={triggerFileInput}>
+              <FaCameraRetro />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+              />
             </div>
           </div>
           <div className="profile-title">
@@ -97,6 +158,15 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {uploadSuccess && (
+        <div className="profile-success">
+          <FaCheckCircle className="profile-success-icon" />
+          <span className="profile-success-message">
+            Profile picture updated successfully!
+          </span>
+        </div>
+      )}
 
       <div className="profile-card">
         <form onSubmit={handleSubmit} className="profile-form">
@@ -274,7 +344,7 @@ export default function Profile() {
               {loading ? (
                 <div className="profile-btn-content">
                   <span className="profile-btn-loader"></span>
-                  <span>Updating...</span>
+                  <span>Saving...</span>
                 </div>
               ) : (
                 <div className="profile-btn-content">
@@ -284,15 +354,12 @@ export default function Profile() {
                 </div>
               )}
             </button>
-
-            <button
-              type="button"
-              className="profile-orders-btn"
-              onClick={() => navigate("/orders")}
-            >
-              <FaShoppingBag className="profile-btn-icon-left" />
-              <span>View My Orders</span>
-            </button>
+            <Link to="/orders" className="profile-orders-btn">
+              <div className="profile-btn-content">
+                <FaShoppingBag className="profile-btn-icon-left" />
+                <span>My Orders</span>
+              </div>
+            </Link>
           </div>
         </form>
       </div>
