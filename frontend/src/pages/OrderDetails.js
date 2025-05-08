@@ -2,6 +2,16 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-toastify";
+import {
+  FaArrowLeft,
+  FaTruck,
+  FaBoxOpen,
+  FaMapMarkerAlt,
+  FaUser,
+  FaCreditCard,
+  FaCalendarAlt,
+} from "react-icons/fa";
+import "../styles/pages/OrderDetails.css";
 
 export default function OrderDetails() {
   const [order, setOrder] = useState(null);
@@ -53,109 +63,180 @@ export default function OrderDetails() {
     });
   };
 
+  // Get status class
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "Delivered":
+        return "status-delivered";
+      case "Processing":
+        return "status-processing";
+      case "Shipped":
+        return "status-shipped";
+      case "Cancelled":
+        return "status-cancelled";
+      default:
+        return "status-pending";
+    }
+  };
+
   return (
-    <div className="container container-fluid">
+    <div className="order-details-container">
       {loading ? (
-        <div className="d-flex justify-content-center my-5">
-          <div className="spinner-border" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
+        <div className="loader">
+          <div className="spinner"></div>
         </div>
       ) : order ? (
         <>
-          <h1 className="my-5">Order Details</h1>
-          <div className="row d-flex justify-content-between">
-            <div className="col-12 col-lg-8 mt-5 order-details">
-              <h2 className="my-5">Order # {order._id}</h2>
+          <h1 className="order-details-title">Order Details</h1>
+          <h2 className="order-id">Order ID: {order._id}</h2>
 
-              <h4 className="mb-4">Shipping Info</h4>
-              <p>
-                <b>Name:</b> {order.user.name}
-              </p>
-              <p>
-                <b>Address:</b>{" "}
-                {order.shippingAddress
-                  ? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}`
-                  : "Not provided"}
-              </p>
-              <p>
-                <b>Amount:</b> ${order.amount}
-              </p>
-              <p>
-                <b>Date:</b> {formatDate(order.createdAt)}
-              </p>
+          <div className="order-details-card">
+            <h3 className="order-section-title">
+              <FaUser /> Customer Information
+            </h3>
+            <div className="order-info-item">
+              <span className="order-info-label">Name:</span>
+              <span className="order-info-value">{order.user.name}</span>
+            </div>
+            <div className="order-info-item">
+              <span className="order-info-label">Email:</span>
+              <span className="order-info-value">{order.user.email}</span>
+            </div>
+          </div>
 
-              <hr />
+          <div className="order-details-card">
+            <h3 className="order-section-title">
+              <FaMapMarkerAlt /> Shipping Information
+            </h3>
+            {order.shippingAddress ? (
+              <>
+                <div className="order-info-item">
+                  <span className="order-info-label">Address:</span>
+                  <span className="order-info-value">
+                    {order.shippingAddress.street}
+                  </span>
+                </div>
+                <div className="order-info-item">
+                  <span className="order-info-label">City:</span>
+                  <span className="order-info-value">
+                    {order.shippingAddress.city}
+                  </span>
+                </div>
+                <div className="order-info-item">
+                  <span className="order-info-label">State:</span>
+                  <span className="order-info-value">
+                    {order.shippingAddress.state}
+                  </span>
+                </div>
+                <div className="order-info-item">
+                  <span className="order-info-label">Postal Code:</span>
+                  <span className="order-info-value">
+                    {order.shippingAddress.postalCode}
+                  </span>
+                </div>
+                <div className="order-info-item">
+                  <span className="order-info-label">Country:</span>
+                  <span className="order-info-value">
+                    {order.shippingAddress.country}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="order-info-item">
+                <span className="order-info-value">Not provided</span>
+              </div>
+            )}
+          </div>
 
-              <h4 className="my-4">Payment</h4>
-              <p>
-                <b>Method:</b> {order.paymentMethod || "Card Payment"}
-              </p>
-              <p
-                className={
-                  order.status === "Delivered" ? "greenColor" : "redColor"
-                }
-              >
-                <b>Status:</b> {order.status}
-              </p>
+          <div className="order-details-card">
+            <h3 className="order-section-title">
+              <FaCreditCard /> Payment Information
+            </h3>
+            <div className="order-info-item">
+              <span className="order-info-label">Method:</span>
+              <span className="order-info-value">
+                {order.paymentMethod || "Card Payment"}
+              </span>
+            </div>
+            <div className="order-info-item">
+              <span className="order-info-label">Total Amount:</span>
+              <span className="order-info-value">${order.amount}</span>
+            </div>
+            <div className="order-info-item">
+              <span className="order-info-label">Order Date:</span>
+              <span className="order-info-value">
+                <FaCalendarAlt /> {formatDate(order.createdAt)}
+              </span>
+            </div>
+            <div className="order-info-item">
+              <span className="order-info-label">Status:</span>
+              <span className={`order-status ${getStatusClass(order.status)}`}>
+                {order.status}
+              </span>
+            </div>
+          </div>
 
-              <h4 className="my-4">Order Items:</h4>
-
-              <hr />
-              <div className="cart-item my-1">
-                {order.cartItems &&
-                  order.cartItems.map((item) => (
-                    <div key={item.product._id} className="row my-5">
-                      <div className="col-4 col-lg-2">
-                        <img
-                          src={
-                            item.product.images && item.product.images[0]
-                              ? item.product.images[0].image
-                              : "/images/default_product.jpg"
-                          }
-                          alt={item.product.name}
-                          height="45"
-                          width="65"
-                        />
-                      </div>
-
-                      <div className="col-5 col-lg-5">
-                        <Link to={`/product/${item.product._id}`}>
-                          {item.product.name}
-                        </Link>
-                      </div>
-
-                      <div className="col-4 col-lg-2 mt-4 mt-lg-0">
-                        <p>${item.product.price}</p>
-                      </div>
-
-                      <div className="col-4 col-lg-3 mt-4 mt-lg-0">
-                        <p>{item.qty} Piece(s)</p>
+          <div className="order-details-card">
+            <h3 className="order-section-title">
+              <FaBoxOpen /> Order Items
+            </h3>
+            <div className="order-items-list">
+              {order.cartItems &&
+                order.cartItems.map((item) => (
+                  <div key={item.product._id} className="order-item">
+                    <img
+                      src={
+                        item.product.images && item.product.images[0]
+                          ? item.product.images[0].image
+                          : "/images/default_product.jpg"
+                      }
+                      alt={item.product.name}
+                      className="order-item-image"
+                    />
+                    <div className="order-item-details">
+                      <Link
+                        to={`/product/${item.product._id}`}
+                        className="order-item-name"
+                      >
+                        {item.product.name}
+                      </Link>
+                      <div className="order-item-price">
+                        ${item.product.price}
                       </div>
                     </div>
-                  ))}
+                    <div className="order-item-quantity">
+                      {item.qty} {item.qty > 1 ? "Pieces" : "Piece"}
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            <div className="order-summary">
+              <div className="order-summary-item">
+                <span>Subtotal</span>
+                <span>${order.amount}</span>
               </div>
-              <hr />
+              <div className="order-summary-item">
+                <span>Shipping</span>
+                <span>Free</span>
+              </div>
+              <div className="order-summary-item order-summary-total">
+                <span>Total</span>
+                <span>${order.amount}</span>
+              </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-12 col-lg-4 mt-3 mb-5">
-              <Link to="/orders" className="btn btn-primary">
-                <i className="fa fa-arrow-left"></i> Back to Orders
-              </Link>
-            </div>
-          </div>
+
+          <Link to="/orders" className="order-back-btn">
+            <FaArrowLeft /> Back to Orders
+          </Link>
         </>
       ) : (
-        <div className="row justify-content-center">
-          <div className="col-6 mt-5 text-center">
-            <h4>
-              Order not found or you do not have access to view this order.
-            </h4>
-            <Link to="/orders" className="btn btn-primary mt-3">
-              Back to Orders
-            </Link>
-          </div>
+        <div className="order-not-found">
+          <h4>Order not found or you do not have access to view this order.</h4>
+          <Link to="/orders" className="order-back-btn">
+            <FaArrowLeft /> Back to Orders
+          </Link>
         </div>
       )}
     </div>
