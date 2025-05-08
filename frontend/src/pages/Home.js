@@ -8,6 +8,7 @@ import {
   FaRegStar,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+import "../styles/pages/Home.css";
 
 export default function Home({ setCartItems }) {
   const [products, setProducts] = useState([]);
@@ -111,7 +112,12 @@ export default function Home({ setCartItems }) {
   return (
     <Fragment>
       {!keyword && (
-        <div className="hero-section">
+        <div
+          className="hero-section"
+          style={{
+            backgroundImage: `url(${process.env.PUBLIC_URL}/images/pattern.png)`,
+          }}
+        >
           <div className="hero-content">
             <h1 className="hero-title">Discover Something New</h1>
             <p className="hero-subtitle">
