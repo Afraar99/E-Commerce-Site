@@ -14,7 +14,8 @@ import Profile from "./pages/Profile";
 import OrderHistory from "./pages/OrderHistory";
 import OrderDetails from "./pages/OrderDetails";
 import LogoutSuccess from "./pages/LogoutSuccess"; // Import the new component
-import "./App.css";
+import "./styles/variables.css";
+import "./styles/base.css";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
