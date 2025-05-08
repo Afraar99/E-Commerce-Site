@@ -1,0 +1,149 @@
+/* Register Page Styles */
+@import "../variables.css";
+@import "./Login.css"; /* Import shared auth styles */
+
+/* Register specific overrides */
+.register-page .auth-card {
+  max-width: 1200px;
+}
+
+.register-page .password-strength {
+  margin-top: 10px;
+}
+
+.strength-bar {
+  height: 4px;
+  background-color: var(--medium-gray);
+  border-radius: 2px;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+
+.strength-progress {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-progress.weak {
+  background-color: var(--error);
+}
+
+.strength-progress.medium {
+  background-color: var(--warning);
+}
+
+.strength-progress.strong {
+  background-color: var(--success);
+}
+
+.strength-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-xs);
+}
+
+.strength-label {
+  font-weight: var(--font-weight-semibold);
+}
+
+.strength-label.weak {
+  color: var(--error);
+}
+
+.strength-label.medium {
+  color: var(--warning);
+}
+
+.strength-label.strong {
+  color: var(--success);
+}
+
+.strength-info {
+  color: var(--text-gray);
+  font-size: var(--font-size-xs);
+}
+
+.password-mismatch {
+  color: var(--error);
+  font-size: var(--font-size-xs);
+  margin-top: 5px;
+}
+
+.register-page .form-checkbox span a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.register-page .form-checkbox span a:hover {
+  text-decoration: underline;
+}
+
+.register-page .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #959595, #7a7a7a);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Dark sidebar variant for register page */
+.register-page .auth-sidebar {
+  background: linear-gradient(135deg, #232f3e, #131921);
+}
+
+.register-page .benefit-item {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.register-page .benefit-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Auth form wrapper */
+.auth-form-wrapper {
+  max-width: 450px; /* Slightly wider for register form */
+}
+
+.auth-benefits {
+  max-width: 380px;
+}
+
+.register-benefits {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+/* Terms and privacy consent */
+.terms-checkbox {
+  margin-top: 20px;
+}
+
+.terms-checkbox label {
+  display: flex;
+  align-items: flex-start;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  margin-top: 4px;
+}
+
+.terms-checkbox .terms-text {
+  margin-left: 10px;
+  font-size: var(--font-size-xs);
+  color: var(--text-gray);
+  line-height: 1.4;
+}
+
+.terms-link {
+  color: var(--primary-blue);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.terms-link:hover {
+  color: var(--dark-blue);
+  text-decoration: underline;
+}

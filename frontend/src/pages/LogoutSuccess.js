@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaCheckCircle, FaSignInAlt, FaHome } from "react-icons/fa";
+import "../styles/pages/LogoutSuccess.css";
 
 const LogoutSuccess = () => {
   // Scroll to top when component mounts

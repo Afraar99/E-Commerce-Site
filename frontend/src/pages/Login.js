@@ -1,32 +1,56 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
 import {
   FaLock,
   FaEnvelope,
-  FaUserPlus,
   FaGoogle,
   FaFacebook,
   FaShoppingBag,
-  FaCreditCard,
   FaTags,
   FaArrowRight,
   FaEye,
   FaEyeSlash,
+  FaRegCheckCircle,
+  FaShieldAlt,
+  FaApple,
 } from "react-icons/fa";
+import "../styles/pages/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const { login } = useContext(UserContext);
+  const { login, isAuthenticated } = useContext(UserContext);
+
+  useEffect(() => {
+    // Redirect if already logged in
+    if (isAuthenticated) {
+      navigate("/");
+    }
+
+    // Check for saved email
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, [isAuthenticated, navigate]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
+
+    // Handle remember me
+    if (rememberMe) {
+      localStorage.setItem("rememberedEmail", email);
+    } else {
+      localStorage.removeItem("rememberedEmail");
+    }
 
     const result = await login(email, password);
 
@@ -45,33 +69,29 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-wrapper">
-        <div className="auth-side auth-form-side">
-          <div className="auth-form-wrapper">
-            <div className="auth-logo">
-              <FaShoppingBag className="auth-logo-icon" />
-              <span>FusionBuy</span>
+    <div className="auth-page login-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-content">
+            <div className="auth-header">
+              <Link to="/" className="auth-logo">
+                <FaShoppingBag className="logo-icon" />
+                <span className="logo-text">FusionBuy</span>
+              </Link>
+              <h1>Welcome Back</h1>
+              <p>Sign in to your account to continue</p>
             </div>
-
-            <h1 className="auth-title">Welcome Back</h1>
-            <p className="auth-subtitle">
-              Sign in to continue your shopping experience
-            </p>
 
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
-                <label htmlFor="email_field" className="form-label">
-                  Email Address
-                </label>
-                <div className="input-with-icon">
-                  <div className="input-icon-wrapper">
-                    <FaEnvelope className="input-icon" />
-                  </div>
+                <label htmlFor="email">Email Address</label>
+                <div className="input-group">
+                  <span className="input-icon">
+                    <FaEnvelope />
+                  </span>
                   <input
                     type="email"
-                    id="email_field"
-                    className="form-control"
+                    id="email"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -81,134 +101,134 @@ export default function Login() {
               </div>
 
               <div className="form-group">
-                <div className="password-label-row">
-                  <label htmlFor="password_field" className="form-label">
-                    Password
-                  </label>
-                  <Link to="/password/forgot" className="forgot-password-link">
+                <div className="label-row">
+                  <label htmlFor="password">Password</label>
+                  <Link to="/password/forgot" className="forgot-link">
                     Forgot Password?
                   </Link>
                 </div>
-                <div className="input-with-icon">
-                  <div className="input-icon-wrapper">
-                    <FaLock className="input-icon" />
-                  </div>
+                <div className="input-group">
+                  <span className="input-icon">
+                    <FaLock />
+                  </span>
                   <input
                     type={showPassword ? "text" : "password"}
-                    id="password_field"
-                    className="form-control"
-                    placeholder="••••••••"
+                    id="password"
+                    placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <button
                     type="button"
-                    className="password-toggle"
+                    className="toggle-password"
                     onClick={togglePasswordVisibility}
-                    tabIndex="-1"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
                   >
-                    {showPassword ? (
-                      <FaEyeSlash className="password-toggle-icon" />
-                    ) : (
-                      <FaEye className="password-toggle-icon" />
-                    )}
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
               </div>
 
-              <div className="form-group form-footer">
-                <div className="custom-checkbox">
-                  <input type="checkbox" id="remember_me" />
-                  <label htmlFor="remember_me">Remember me</label>
-                </div>
+              <div className="form-checkbox">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                  />
+                  <span className="checkbox-custom"></span>
+                  <span>Remember me</span>
+                </label>
               </div>
 
-              <button
-                id="login_button"
-                type="submit"
-                className="btn auth-btn"
-                disabled={loading}
-              >
+              <button type="submit" className="btn-primary" disabled={loading}>
                 {loading ? (
-                  <div className="auth-btn-content">
-                    <span className="auth-btn-loader"></span>
-                    <span>Signing In...</span>
-                  </div>
+                  <span className="loading-spinner"></span>
                 ) : (
-                  <div className="auth-btn-content">
-                    <span>SIGN IN</span>
-                    <FaArrowRight className="auth-btn-icon" />
-                  </div>
+                  <>
+                    Sign In <FaArrowRight />
+                  </>
                 )}
               </button>
-
-              <div className="auth-separator">
-                <span>OR</span>
-              </div>
-
-              <div className="social-login">
-                <button type="button" className="btn google-btn">
-                  <FaGoogle className="social-icon" /> Continue with Google
-                </button>
-                <button type="button" className="btn facebook-btn">
-                  <FaFacebook className="social-icon" /> Continue with Facebook
-                </button>
-              </div>
-
-              <div className="register-prompt">
-                <p>
-                  New to FusionBuy?{" "}
-                  <Link to="/register" className="register-link">
-                    <FaUserPlus className="register-icon" /> Create Account
-                  </Link>
-                </p>
-              </div>
             </form>
+
+            <div className="auth-separator">
+              <span>Or continue with</span>
+            </div>
+
+            <div className="social-logins">
+              <button className="social-btn google-btn">
+                <FaGoogle /> Google
+              </button>
+              <button className="social-btn facebook-btn">
+                <FaFacebook /> Facebook
+              </button>
+              <button className="social-btn apple-btn">
+                <FaApple /> Apple
+              </button>
+            </div>
+
+            <div className="register-prompt">
+              <p>
+                Don't have an account?{" "}
+                <Link to="/register">Create an account</Link>
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div
-          className="auth-side auth-image-side"
-          style={{
-            backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url(${process.env.PUBLIC_URL}/images/login-bg.png)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="auth-benefits">
-            <div className="benefit-item">
-              <div className="benefit-icon">
-                <FaShoppingBag />
+          <div className="auth-sidebar">
+            <div className="sidebar-content">
+              <div className="sidebar-header">
+                <h2>Benefits of joining</h2>
+                <p>Unlock premium features with your account</p>
               </div>
-              <div className="benefit-text">
-                <h3>Exclusive Deals</h3>
-                <p>
-                  Access member-only offers and personalized recommendations
-                </p>
-              </div>
-            </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
-                <FaCreditCard />
-              </div>
-              <div className="benefit-text">
-                <h3>Faster Checkout</h3>
-                <p>Save your details for quick and secure purchases</p>
-              </div>
-            </div>
+              <div className="benefits-list">
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaShoppingBag />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Faster Checkout</h3>
+                    <p>
+                      Save your shipping and payment details for quick checkout
+                    </p>
+                  </div>
+                </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
-                <FaTags />
-              </div>
-              <div className="benefit-text">
-                <h3>Special Discounts</h3>
-                <p>Enjoy up to 70% off on premium brands</p>
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaRegCheckCircle />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Order Tracking</h3>
+                    <p>Monitor your orders and delivery status in real-time</p>
+                  </div>
+                </div>
+
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaTags />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Exclusive Deals</h3>
+                    <p>
+                      Access special offers and personalized recommendations
+                    </p>
+                  </div>
+                </div>
+
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaShieldAlt />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Secure Shopping</h3>
+                    <p>
+                      Your personal and payment information is always protected
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

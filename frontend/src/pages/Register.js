@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/UserContext";
@@ -10,12 +10,15 @@ import {
   FaFacebook,
   FaShoppingBag,
   FaShieldAlt,
-  FaUserFriends,
-  FaSignInAlt,
   FaArrowRight,
   FaEye,
   FaEyeSlash,
+  FaApple,
+  FaCheckCircle,
+  FaPercent,
+  FaTruckMoving,
 } from "react-icons/fa";
+import "../styles/pages/Register.css";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -28,14 +31,33 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const navigate = useNavigate();
-  const { register } = useContext(UserContext);
+  const { register, isAuthenticated } = useContext(UserContext);
 
   const { name, email, password, confirmPassword } = formData;
+
+  useEffect(() => {
+    // Redirect if already logged in
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Calculate password strength
+    if (name === "password") {
+      let strength = 0;
+      if (value.length >= 8) strength += 1;
+      if (/[A-Z]/.test(value)) strength += 1;
+      if (/[0-9]/.test(value)) strength += 1;
+      if (/[^A-Za-z0-9]/.test(value)) strength += 1;
+      setPasswordStrength(strength);
+    }
   };
 
   async function handleSubmit(e) {
@@ -43,6 +65,11 @@ export default function Register() {
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
+      return;
+    }
+
+    if (!acceptTerms) {
+      toast.error("Please accept the Terms and Conditions");
       return;
     }
 
@@ -72,36 +99,46 @@ export default function Register() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  return (
-    <div className="auth-container">
-      <div className="auth-wrapper">
-        <div className="auth-side auth-form-side">
-          <div className="auth-form-wrapper">
-            <div className="auth-logo">
-              <FaShoppingBag className="auth-logo-icon" />
-              <span>FusionBuy</span>
-            </div>
+  const getPasswordStrengthLabel = () => {
+    if (passwordStrength === 0) return "Very Weak";
+    if (passwordStrength === 1) return "Weak";
+    if (passwordStrength === 2) return "Medium";
+    if (passwordStrength === 3) return "Strong";
+    if (passwordStrength === 4) return "Very Strong";
+  };
 
-            <h1 className="auth-title">Create Account</h1>
-            <p className="auth-subtitle">
-              Join FusionBuy to start your shopping journey
-            </p>
+  const getPasswordStrengthClass = () => {
+    if (passwordStrength <= 1) return "weak";
+    if (passwordStrength === 2) return "medium";
+    if (passwordStrength >= 3) return "strong";
+  };
+
+  return (
+    <div className="auth-page register-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-content">
+            <div className="auth-header">
+              <Link to="/" className="auth-logo">
+                <FaShoppingBag className="logo-icon" />
+                <span className="logo-text">FusionBuy</span>
+              </Link>
+              <h1>Create an Account</h1>
+              <p>Join FusionBuy to start your shopping journey</p>
+            </div>
 
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
-                <label htmlFor="name_field" className="form-label">
-                  Full Name
-                </label>
-                <div className="input-with-icon">
-                  <div className="input-icon-wrapper">
-                    <FaUser className="input-icon" />
-                  </div>
+                <label htmlFor="name">Full Name</label>
+                <div className="input-group">
+                  <span className="input-icon">
+                    <FaUser />
+                  </span>
                   <input
                     type="text"
-                    id="name_field"
-                    className="form-control"
-                    placeholder="Mohamed Afraar"
+                    id="name"
                     name="name"
+                    placeholder="Enter your full name"
                     value={name}
                     onChange={handleChange}
                     required
@@ -110,19 +147,16 @@ export default function Register() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="email_field" className="form-label">
-                  Email Address
-                </label>
-                <div className="input-with-icon">
-                  <div className="input-icon-wrapper">
-                    <FaEnvelope className="input-icon" />
-                  </div>
+                <label htmlFor="email">Email Address</label>
+                <div className="input-group">
+                  <span className="input-icon">
+                    <FaEnvelope />
+                  </span>
                   <input
                     type="email"
-                    id="email_field"
-                    className="form-control"
-                    placeholder="your@email.com"
+                    id="email"
                     name="email"
+                    placeholder="your@email.com"
                     value={email}
                     onChange={handleChange}
                     required
@@ -131,19 +165,16 @@ export default function Register() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="password_field" className="form-label">
-                  Password
-                </label>
-                <div className="input-with-icon">
-                  <div className="input-icon-wrapper">
-                    <FaLock className="input-icon" />
-                  </div>
+                <label htmlFor="password">Password</label>
+                <div className="input-group">
+                  <span className="input-icon">
+                    <FaLock />
+                  </span>
                   <input
                     type={showPassword ? "text" : "password"}
-                    id="password_field"
-                    className="form-control"
-                    placeholder="••••••••"
+                    id="password"
                     name="password"
+                    placeholder="Create a password"
                     value={password}
                     onChange={handleChange}
                     required
@@ -151,143 +182,173 @@ export default function Register() {
                   />
                   <button
                     type="button"
-                    className="password-toggle"
+                    className="toggle-password"
                     onClick={togglePasswordVisibility}
-                    tabIndex="-1"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
                   >
-                    {showPassword ? (
-                      <FaEyeSlash className="password-toggle-icon" />
-                    ) : (
-                      <FaEye className="password-toggle-icon" />
-                    )}
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
-                <small className="password-hint">
-                  Must be at least 6 characters long
-                </small>
+                {password && (
+                  <div className="password-strength">
+                    <div className="strength-bar">
+                      <div
+                        className={`strength-progress ${getPasswordStrengthClass()}`}
+                        style={{ width: `${(passwordStrength / 4) * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="strength-text">
+                      <span
+                        className={`strength-label ${getPasswordStrengthClass()}`}
+                      >
+                        {getPasswordStrengthLabel()}
+                      </span>
+                      <span className="strength-info">
+                        {passwordStrength < 3 &&
+                          "Use 8+ characters with letters, numbers & symbols"}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="confirm_password_field" className="form-label">
-                  Confirm Password
-                </label>
-                <div className="input-with-icon">
-                  <div className="input-icon-wrapper">
-                    <FaLock className="input-icon" />
-                  </div>
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <div className="input-group">
+                  <span className="input-icon">
+                    <FaLock />
+                  </span>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    id="confirm_password_field"
-                    className="form-control"
-                    placeholder="••••••••"
+                    id="confirmPassword"
                     name="confirmPassword"
+                    placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={handleChange}
                     required
                   />
                   <button
                     type="button"
-                    className="password-toggle"
+                    className="toggle-password"
                     onClick={toggleConfirmPasswordVisibility}
-                    tabIndex="-1"
-                    aria-label={
-                      showConfirmPassword ? "Hide password" : "Show password"
-                    }
                   >
-                    {showConfirmPassword ? (
-                      <FaEyeSlash className="password-toggle-icon" />
-                    ) : (
-                      <FaEye className="password-toggle-icon" />
-                    )}
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+                {confirmPassword && password !== confirmPassword && (
+                  <div className="password-mismatch">
+                    Passwords do not match
+                  </div>
+                )}
+              </div>
+
+              <div className="form-checkbox">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={acceptTerms}
+                    onChange={() => setAcceptTerms(!acceptTerms)}
+                  />
+                  <span className="checkbox-custom"></span>
+                  <span>
+                    I agree to the <Link to="/terms">Terms of Service</Link> and{" "}
+                    <Link to="/privacy">Privacy Policy</Link>
+                  </span>
+                </label>
               </div>
 
               <button
-                id="register_button"
                 type="submit"
-                className="btn auth-btn"
-                disabled={loading}
+                className="btn-primary"
+                disabled={loading || !acceptTerms}
               >
                 {loading ? (
-                  <div className="auth-btn-content">
-                    <span className="auth-btn-loader"></span>
-                    <span>Creating Account...</span>
-                  </div>
+                  <span className="loading-spinner"></span>
                 ) : (
-                  <div className="auth-btn-content">
-                    <span>SIGN UP</span>
-                    <FaArrowRight className="auth-btn-icon" />
-                  </div>
+                  <>
+                    Create Account <FaArrowRight />
+                  </>
                 )}
               </button>
-
-              <div className="auth-separator">
-                <span>OR</span>
-              </div>
-
-              <div className="social-login">
-                <button type="button" className="btn google-btn">
-                  <FaGoogle className="social-icon" /> Continue with Google
-                </button>
-                <button type="button" className="btn facebook-btn">
-                  <FaFacebook className="social-icon" /> Continue with Facebook
-                </button>
-              </div>
-
-              <div className="register-prompt">
-                <p>
-                  Already have an account?{" "}
-                  <Link to="/login" className="register-link">
-                    <FaSignInAlt className="register-icon" /> Sign In
-                  </Link>
-                </p>
-              </div>
             </form>
+
+            <div className="auth-separator">
+              <span>Or sign up with</span>
+            </div>
+
+            <div className="social-logins">
+              <button className="social-btn google-btn">
+                <FaGoogle /> Google
+              </button>
+              <button className="social-btn facebook-btn">
+                <FaFacebook /> Facebook
+              </button>
+              <button className="social-btn apple-btn">
+                <FaApple /> Apple
+              </button>
+            </div>
+
+            <div className="register-prompt">
+              <p>
+                Already have an account? <Link to="/login">Sign in</Link>
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div
-          className="auth-side auth-image-side"
-          style={{
-            backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url(${process.env.PUBLIC_URL}/images/register-bg.png)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="auth-benefits register-benefits">
-            <div className="benefit-item">
-              <div className="benefit-icon">
-                <FaShieldAlt />
+          <div className="auth-sidebar">
+            <div className="sidebar-content">
+              <div className="sidebar-header">
+                <h2>Why choose FusionBuy?</h2>
+                <p>Join thousands of satisfied customers</p>
               </div>
-              <div className="benefit-text">
-                <h3>Secure Shopping</h3>
-                <p>
-                  Your data is protected with advanced encryption technology
-                </p>
-              </div>
-            </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
-                <FaUserFriends />
-              </div>
-              <div className="benefit-text">
-                <h3>Join Our Community</h3>
-                <p>Connect with millions of shoppers around the world</p>
-              </div>
-            </div>
+              <div className="benefits-list">
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaCheckCircle />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Premium Quality</h3>
+                    <p>
+                      We offer only the highest quality products, carefully
+                      selected for you
+                    </p>
+                  </div>
+                </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
-                <FaShoppingBag />
-              </div>
-              <div className="benefit-text">
-                <h3>Exclusive Access</h3>
-                <p>Be the first to know about new arrivals and flash sales</p>
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaTruckMoving />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Fast Delivery</h3>
+                    <p>Get your orders delivered quickly to your doorstep</p>
+                  </div>
+                </div>
+
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaPercent />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Exclusive Discounts</h3>
+                    <p>
+                      Members get access to special offers and personalized
+                      deals
+                    </p>
+                  </div>
+                </div>
+
+                <div className="benefit-item">
+                  <div className="benefit-icon">
+                    <FaShieldAlt />
+                  </div>
+                  <div className="benefit-text">
+                    <h3>Secure Shopping</h3>
+                    <p>
+                      Your data is protected with advanced encryption technology
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
