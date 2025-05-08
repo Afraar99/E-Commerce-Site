@@ -1,0 +1,218 @@
+/* Base Styles and Resets */
+@import "./variables.css";
+
+html,
+body {
+  font-family: var(--body-font);
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
+  background: var(--gradient-background);
+  background-attachment: fixed;
+}
+
+html,
+body,
+#root,
+.App {
+  height: 100%;
+  min-height: 100vh;
+}
+
+/* Apply typography to base elements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading-font);
+  margin-top: 0;
+  line-height: var(--line-height-heading);
+  color: var(--dark-blue);
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+}
+
+h4 {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+}
+
+h5 {
+  font-size: var(--font-size-h5);
+  font-weight: var(--font-weight-medium);
+}
+
+h6 {
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-medium);
+}
+
+p,
+li,
+input,
+textarea,
+button,
+a {
+  font-family: var(--body-font);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--text-gray);
+}
+
+small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+a {
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+/* Utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.ml-1 {
+  margin-left: var(--space-xs);
+}
+
+.ml-2 {
+  margin-left: var(--space-sm);
+}
+
+.mr-1 {
+  margin-right: var(--space-xs);
+}
+
+.mr-2 {
+  margin-right: var(--space-sm);
+}
+
+.mr-3 {
+  margin-right: var(--space-md);
+}
+
+.ml-3 {
+  margin-left: var(--space-md);
+}
+
+.p-0 {
+  padding: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar-track {
+  background-color: var(--light-gray);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--medium-gray);
+  border-radius: var(--radius-pill);
+}
+
+/* Loading spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.spinner-container {
+  margin-bottom: var(--space-lg);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(74, 108, 211, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--primary-blue);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  color: var(--text-gray);
+  font-size: var(--font-size-body);
+}
