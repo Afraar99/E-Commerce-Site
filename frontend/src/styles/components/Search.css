@@ -1,0 +1,108 @@
+/* Search Component Styles */
+@import "../variables.css";
+
+.search-form {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.search-input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  border: 1px solid var(--medium-gray);
+  transition: all var(--transition-normal);
+}
+
+#search_field {
+  background: white;
+  border: none;
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+  padding: 12px 20px;
+  font-size: var(--font-size-small);
+  transition: all var(--transition-normal);
+  height: 48px;
+  flex-grow: 1;
+  outline: none;
+  color: var(--dark-blue);
+  -webkit-appearance: none;
+}
+
+#search_field::placeholder {
+  color: var(--text-gray);
+  opacity: 0.7;
+}
+
+#search_field:focus {
+  background: white;
+}
+
+.search-form:focus-within .search-input-group {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(74, 108, 211, 0.15);
+}
+
+#search_btn {
+  background: var(--blue-gradient);
+  color: white;
+  border: none;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  padding: 0 25px;
+  font-size: 18px;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  cursor: pointer;
+}
+
+#search_btn:hover {
+  background: linear-gradient(to right, #3458b2, #4a6cd3);
+  box-shadow: 0 5px 15px rgba(74, 108, 211, 0.3);
+  transform: translateY(-1px);
+}
+
+#search_btn:active {
+  transform: translateY(0);
+}
+
+#search_btn svg {
+  margin-right: 0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .search-form {
+    margin-bottom: 10px;
+  }
+
+  #search_field {
+    padding: 10px 15px;
+    height: 42px;
+  }
+
+  #search_btn {
+    padding: 0 20px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 576px) {
+  #search_field {
+    padding: 8px 12px;
+    height: 38px;
+    font-size: 12px;
+  }
+
+  #search_btn {
+    padding: 0 15px;
+    height: 38px;
+    font-size: 16px;
+  }
+}

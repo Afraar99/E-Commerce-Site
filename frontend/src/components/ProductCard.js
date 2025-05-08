@@ -6,6 +6,7 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+import "../styles/components/ProductCard.css";
 
 export default function ProductCard({ product, addToCart }) {
   const navigate = useNavigate();
