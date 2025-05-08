@@ -20,6 +20,7 @@ import {
   FaHistory,
   FaBoxOpen,
 } from "react-icons/fa";
+import "../styles/pages/OrderHistory.css";
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
