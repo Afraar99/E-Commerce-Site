@@ -41,49 +41,6 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="footer-features">
-        <div className="container">
-          <div className="features-grid">
-            <div className="feature-item">
-              <div className="feature-icon">
-                <FaShippingFast />
-              </div>
-              <div className="feature-content">
-                <h4>Free Shipping</h4>
-                <p>On all orders over $50</p>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-icon">
-                <FaExchangeAlt />
-              </div>
-              <div className="feature-content">
-                <h4>Easy Returns</h4>
-                <p>30-day return policy</p>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-icon">
-                <FaShieldAlt />
-              </div>
-              <div className="feature-content">
-                <h4>Secure Payments</h4>
-                <p>Protected by encryption</p>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-icon">
-                <FaHeadset />
-              </div>
-              <div className="feature-content">
-                <h4>24/7 Support</h4>
-                <p>Call or email us anytime</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="footer-main">
         <div className="container">
           <div className="footer-widgets">
