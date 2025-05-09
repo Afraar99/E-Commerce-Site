@@ -14,6 +14,7 @@
   will-change: transform;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .site-header.hidden {
@@ -118,13 +119,13 @@
 
 /* To account for the fixed header */
 body {
-  padding-top: 121px;
+  padding-top: 110px;
   transition: padding-top 0.3s ease;
 }
 
 /* Adjusted padding for when the announcement bar is visible/hidden */
 body.has-announcement {
-  padding-top: 152px;
+  padding-top: 145px;
 }
 
 .header-inner {
@@ -418,11 +419,11 @@ body.has-announcement {
 /* Responsive styles */
 @media (max-width: 991px) {
   body {
-    padding-top: 110px;
+    padding-top: 100px;
   }
 
   body.has-announcement {
-    padding-top: 162px;
+    padding-top: 135px;
   }
 
   .header-inner {
@@ -439,11 +440,11 @@ body.has-announcement {
 
 @media (max-width: 768px) {
   body {
-    padding-top: 90px;
+    padding-top: 80px;
   }
 
   body.has-announcement {
-    padding-top: 140px;
+    padding-top: 120px;
   }
 
   .announcement-text {
@@ -473,11 +474,11 @@ body.has-announcement {
 
 @media (max-width: 576px) {
   body {
-    padding-top: 80px;
+    padding-top: 70px;
   }
 
   body.has-announcement {
-    padding-top: 130px;
+    padding-top: 110px;
   }
 
   .action-button {
